@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>Chat app</h1>
+
+    <form id="message-form">
+        <input type="text" id="message-input" name="message" placeholder="Send message"><br>
+        <input id="submit-button" type="submit" value="Submit">
+    </form>
+
+    <input id="send-location" type="submit" value="Send location">
+    
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/chat.js"></script>
+
+</html>
