@@ -1,8 +1,8 @@
 var express = require('express');
-var http = require('http');
-var path = require('path');
-var socketio = require('socket.io');
 var app = express();
+var path = require('path');
+var http = require('http');
+var socketio = require('socket.io');
 var server = http.createServer(app);
 var io = socketio(server);
 

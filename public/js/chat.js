@@ -26,4 +26,3 @@ $('#send-location').on('click', () => {
         });
     });
 });
-
