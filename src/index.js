@@ -21,7 +21,7 @@ io.on('connection', socket => {
 
     socket.emit('welcome-message', 'Welcome, user!');
 
-    socket.broadcast.emit('newUser', 'New user entered in the room');
+    socket.broadcast.emit('newUser', 'New user entered in  the room');
 
     socket.on('sendMessage', data => io.emit('new-message', data));
 
@@ -32,4 +32,4 @@ io.on('connection', socket => {
     });
 });
 
-server.listen(port, () => console.log('Listening on port ' + port)); 
+server.listen(port, () => console.log('Listening on port ' + port));  
