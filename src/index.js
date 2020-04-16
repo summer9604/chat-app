@@ -5,6 +5,9 @@ var http = require('http');
 var socketio = require('socket.io');
 var server = http.createServer(app);
 var io = socketio(server);
+var Filter = require('bad-words');
+var { generateMessage, generateLocationMessage } = require('./utils/messages.js');
+var { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users.js');
 
 var publicDirectoryPath = path.join(__dirname, '../public');
 var port = process.env.PORT || 3000;
@@ -19,17 +22,40 @@ io.on('connection', socket => {
 
     console.log('New connection');
 
-    socket.emit('welcome-message', 'Welcome, user!');
+    socket.on('join', ({ username, room }) => {
 
-    socket.broadcast.emit('newUser', 'New user entered in  the room');
+        if (getUser(username)) {
+            socket.emit('forbidden');
+        } else {
+            addUser(username, room);
 
-    socket.on('sendMessage', data => io.emit('new-message', data));
+            socket.join(room);
 
-    socket.on('disconnect', () => io.emit('new-message', 'User left the room'));
+            socket.emit('welcome-message', generateMessage('Welcome, user!'));
 
-    socket.on('sendLocation', ({ latitude, longitude }) => {
-        socket.broadcast.emit('new-message', 'https://google.com/maps?q=' + latitude + ',' + longitude);
+            socket.to(room).broadcast.emit('newUser', generateMessage(username + ' entered in the room'));
+        }
     });
+
+    socket.on('sendMessage', (message, callback) => {
+        var filter = new Filter();
+
+        if (filter.isProfane(message)) {
+            callback('Content not allowed');
+        } else {
+            io.emit('new-message', generateMessage(message));
+            callback('Message sent.');
+        }
+    });
+
+    socket.on('sendLocation', ({ latitude, longitude }, callback) => {
+        socket.broadcast.emit('broadcastLocation', generateLocationMessage('https://google.com/maps?q=' + latitude + ',' + longitude));
+        callback('Location was shared!');
+    });
+
+    socket.on('disconnect', () => {
+        io.emit('new-message', generateMessage('User left the room'));
+    }); 
 });
 
 server.listen(port, () => console.log('Listening on port ' + port));  
