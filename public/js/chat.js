@@ -34,12 +34,12 @@ socket.on('newUser', ({ username, message, createdAt }) => {
     messages.append(html);
 });
 
-socket.on('broadcastLocation', ({ username, location }) => {
+socket.on('broadcastLocation', ({ username, location, createdAt }) => {
     var html = Mustache.render(locationMessageTemplate, {
         username,
         message: 'User location',
         url: location,
-        createdAt: moment(data.createdAt).format('hh:mm a')
+        createdAt: moment(createdAt).format('hh:mm a')
     });
     messages.append(html);
 });
