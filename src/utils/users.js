@@ -1,22 +1,30 @@
 var users = [];
 
+var addUser = (id, name, room) => {
 
-var addUser = (name, room) => {
+    name = name.trim().toLowerCase();
+    room = room.trim().toLowerCase();
 
-    if (users.length > 0) {
-        var user = users.find(user => user.name == name);
+    if (users.find(user => user.name == name)) return { user: undefined, error: 'User already exists' };
 
-        if (user) return undefined;
-    }
-    return users.push({ name, room });
+    users.push({ id, name, room });
+
+    return { user: getUser(id), error: undefined };
 };
 
-var removeUser = name => users = users.filter(user => user.name != name);
+var removeUser = id => {
 
-var getUser = name => users.find(user => user.name == name);
+    var index = users.findIndex(user => user.id == id); //o find resulta mas ja que temos este... hehehehe
 
-var getUsersInRoom = roomName => users.filter(user => user.room == roomName);
+    return index == -1 ? null : users.splice(index, 1)[0];
+};
 
+var getUser = id => users.find(user => user.id == id);
+
+var getUsersInRoom = room => {
+    room = room.trim().toLowerCase();
+    return users.filter(user => user.room == room);
+};
 
 module.exports = {
     addUser,

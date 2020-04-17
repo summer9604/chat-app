@@ -31,22 +31,40 @@
     <script id="message-template" type="text/html">
         <div class="message">
             <p>
-                <span class="message__name">Some user name</span>
+                <span class="message__name">{{username}}</span>
                 <span class="message__meta">{{createdAt}}</span>
             </p>
             <p>{{message}}</p>
         </div>
     </script>
 
+    <script id="profanity-template" type="text/html">
+        <div class="message">
+            <p>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p style='color: red;'>{{message}}</p>
+        </div>
+    </script>
+
     <script id="locationMessage-template" type="text/html">
         <div class="message">
             <p>
-                <span class="message__name">Some user name</span>
+                <span class="message__name">{{username}}</span>
                 <span class="message__meta">{{createdAt}}</span>
             </p>
             <p><a href="{{url}}" target='_blank'>{{message}}</a></p>
         </div>
     </script>
+
+    <!-- <script id="usersOnline-template" type="text/html">
+        <div class="message">
+            <p>
+                <span class="message__name">{{user}}</span>
+            </p>
+        </div>
+    </script> -->
 
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>

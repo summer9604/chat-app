@@ -1,12 +1,14 @@
-var generateMessage = text => {
+var generateMessage = ({username, message}) => {
     return {
-        text,
+        username,
+        message,
         createdAt: new Date().getTime()
     };
 };
 
-var generateLocationMessage = location => {
+var generateLocationMessage = ({username, location}) => {
     return {
+        username,
         location,
         createdAt: new Date().getTime()
     };
