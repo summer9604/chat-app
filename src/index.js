@@ -22,40 +22,46 @@ io.on('connection', socket => {
 
     console.log('New connection');
 
-    socket.on('join', ({ username, room }) => {
+    socket.on('join', ({ username, room }, callback) => {
 
-        if (getUser(username)) {
-            socket.emit('forbidden');
-        } else {
-            addUser(username, room);
+        var { user, error } = addUser(socket.id, username, room);
 
-            socket.join(room);
+        if (error) return callback(error);
 
-            socket.emit('welcome-message', generateMessage('Welcome, user!'));
+        socket.join(user.room);
 
-            socket.to(room).broadcast.emit('newUser', generateMessage(username + ' entered in the room'));
-        }
+        socket.emit('welcome-message', generateMessage({ username: user.name, message: 'Welcome, ' + user.name + '!' }));
+
+        socket.broadcast.to(user.room).emit('newUser', generateMessage({ username: user.name, message: user.name + ' entered in the room' }));
     });
 
-    socket.on('sendMessage', (message, callback) => {
+    socket.on('sendMessage', ({ message }, callback) => {
+
+        var user = getUser(socket.id);
         var filter = new Filter();
 
         if (filter.isProfane(message)) {
-            callback('Content not allowed');
+            socket.emit('profanity', generateMessage({ username: user.name, message: 'Profanity is not allowed!' }));
         } else {
-            io.emit('new-message', generateMessage(message));
+            io.to(user.room).emit('new-message', generateMessage({ username: user.name, message }));
             callback('Message sent.');
         }
     });
 
     socket.on('sendLocation', ({ latitude, longitude }, callback) => {
-        socket.broadcast.emit('broadcastLocation', generateLocationMessage('https://google.com/maps?q=' + latitude + ',' + longitude));
+
+        var user = getUser(socket.id);
+
+        socket.broadcast.to(user.room).emit('broadcastLocation', generateLocationMessage({ username: user.name, location: 'https://google.com/maps?q=' + latitude + ',' + longitude }));
         callback('Location was shared!');
     });
 
     socket.on('disconnect', () => {
-        io.emit('new-message', generateMessage('User left the room'));
-    }); 
+
+        var user = removeUser(socket.id);
+
+        if (user) io.to(user.room).emit('new-message', generateMessage({ username: user.name, message: user.name + ' has left the room' }));
+    });
 });
 
 server.listen(port, () => console.log('Listening on port ' + port));  
