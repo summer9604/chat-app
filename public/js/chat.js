@@ -5,68 +5,66 @@ var message = $('#message-input');
 var submitButton = $("#submit-button");
 var sendLocationButton = $('#send-location');
 var messages = $('#messages');
-var usersOnline = $('.chat__sidebar');
-var errorMessage = $('.centered-form__box');
+var sidebar = $('#sidebar');
 
 //TEMPLATES
 var messageTemplate = $('#message-template').html();
 var locationMessageTemplate = $('#locationMessage-template').html();
 var profanityMessageTemplate = $("#profanity-template").html();
-var errorMessageTemplate = $('#error-template').html();
-var usersOnlineTemplate = $('#"usersOnline-template').html();
+var sidebarTemplate = $('#sidebar-template').html();
 
 //OPTIONS
 var { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
-socket.on('welcome-message', data => {
+socket.on('welcome-message', ({ username, message, createdAt }) => {
     var html = Mustache.render(messageTemplate, {
-        username: data.username,
-        message: data.message,
-        createdAt: moment(data.createdAt).format('hh:mm a')
+        username: username,
+        message: message,
+        createdAt: moment(createdAt).format('hh:mm a')
     });
     messages.append(html);
 });
 
-socket.on('newUser', data => {
+socket.on('newUser', ({ username, message, createdAt }) => {
     var html = Mustache.render(messageTemplate, {
-        username: data.username,
-        message: data.message,
-        createdAt: moment(data.createdAt).format('hh:mm a')
+        username: username,
+        message: message,
+        createdAt: moment(createdAt).format('hh:mm a')
     });
     messages.append(html);
 });
 
-socket.on('broadcastLocation', data => {
+socket.on('broadcastLocation', ({ username, location }) => {
     var html = Mustache.render(locationMessageTemplate, {
-        username: data.username,
+        username,
         message: 'User location',
-        url: data.location,
+        url: location,
         createdAt: moment(data.createdAt).format('hh:mm a')
     });
     messages.append(html);
 });
 
-// socket.on('online-users', users => {
-//     users.forEach(user => {
-//         var html = Mustache.render(usersOnlineTemplate, {user: user.name});
-//         usersOnline.append(html);
-//     });
-// });
+socket.on('online-users', ({ room, users }) => {
+    console.log(room);
+    console.log(users);
+    var html = Mustache.render(sidebarTemplate, { room, users });
+    sidebar.html(html);
+});
 
-socket.on('new-message', data => {
+socket.on('new-message', ({ username, message, createdAt }) => {
     var html = Mustache.render(messageTemplate, {
-        username: data.username,
-        message: data.message,
-        createdAt: moment(data.createdAt).format('hh:mm a')
+        username: username,
+        message: message,
+        createdAt: moment(createdAt).format('hh:mm a')
     });
     messages.append(html);
 });
 
-socket.on('profanity', data => {
+socket.on('profanity', ({ username, message, createdAt }) => {
     var html = Mustache.render(profanityMessageTemplate, {
-        username: data.username,
-        message: data.message,
-        createdAt: moment(data.createdAt).format('hh:mm a')
+        username: username,
+        message: message,
+        createdAt: moment(createdAt).format('hh:mm a')
     });
     messages.append(html);
 });

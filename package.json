@@ -1,7 +1,6 @@
 {
   "name": "chat-app",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
@@ -17,5 +16,14 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/summer9604/chat-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/summer9604/chat-app/issues"
+  },
+  "homepage": "https://github.com/summer9604/chat-app#readme",
+  "description": ""
 }
