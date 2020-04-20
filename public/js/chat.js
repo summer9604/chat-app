@@ -47,7 +47,7 @@ socket.on('broadcastLocation', ({ username, location, createdAt }) => {
 socket.on('online-users', ({ room, users }) => {
     console.log(room);
     console.log(users);
-    var html = Mustache.render(sidebarTemplate, { room, users });
+    var html = Mustache.render(sidebarTemplate, { room, users }); // not working...
     sidebar.html(html);
 });
 

@@ -14,7 +14,7 @@ var addUser = (id, name, room) => {
 
 var removeUser = id => {
 
-    var index = users.findIndex(user => user.id == id); //o find resulta mas ja que temos este... hehehehe
+    var index = users.findIndex(user => user.id == id); //o find resulta mas ja que temos este...
 
     return index == -1 ? null : users.splice(index, 1)[0];
 };
