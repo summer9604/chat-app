@@ -30,9 +30,9 @@ io.on('connection', socket => {
 
         socket.join(user.room);
 
-        socket.emit('welcome-message', generateMessage({ username: 'Admin', message: 'Welcome, ' + user.name + '!' }));
+        socket.emit('welcome-message', generateMessage({ username: 'Admin', message: 'Welcome, ' + user.username + '!' }));
 
-        socket.broadcast.to(user.room).emit('newUser', generateMessage({ username: 'Admin', message: user.name + ' entered in the room' }));
+        socket.broadcast.to(user.room).emit('newUser', generateMessage({ username: 'Admin', message: user.username + ' entered in the room' }));
 
         io.to(user.room).emit('online-users', { room: user.room, users: getUsersInRoom(user.room) });
     });
@@ -45,7 +45,7 @@ io.on('connection', socket => {
         if (filter.isProfane(message)) {
             socket.emit('profanity', generateMessage({ username: 'Admin', message: 'Profanity is not allowed!' }));
         } else {
-            io.to(user.room).emit('new-message', generateMessage({ username: user.name, message }));
+            io.to(user.room).emit('new-message', generateMessage({ username: user.username, message }));
             callback('Message sent.');
         }
     });
@@ -53,8 +53,7 @@ io.on('connection', socket => {
     socket.on('sendLocation', ({ latitude, longitude }, callback) => {
 
         var user = getUser(socket.id);
-
-        socket.broadcast.to(user.room).emit('broadcastLocation', generateLocationMessage({ username: user.name, location: 'https://google.com/maps?q=' + latitude + ',' + longitude }));
+        io.to(user.room).emit('broadcastLocation', generateLocationMessage({ username: user.username, location: 'https://google.com/maps?q=' + latitude + ',' + longitude }));
         callback('Location was shared!');
     });
 
@@ -63,7 +62,7 @@ io.on('connection', socket => {
         var user = removeUser(socket.id);
 
         if (user) {
-            io.to(user.room).emit('new-message', generateMessage({ username: 'Admin', message: user.name + ' has left the room' }));
+            io.to(user.room).emit('new-message', generateMessage({ username: 'Admin', message: user.username + ' has left the room' }));
             io.to(user.room).emit('online-users', { room: user.room, users: getUsersInRoom(user.room) });
         }
     });

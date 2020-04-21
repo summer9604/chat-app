@@ -1,13 +1,13 @@
 var users = [];
 
-var addUser = (id, name, room) => {
+var addUser = (id, username, room) => {
 
-    name = name.trim().toLowerCase();
+    username = username.trim().toLowerCase();
     room = room.trim().toLowerCase();
 
-    if (users.find(user => user.name == name)) return { user: undefined, error: 'User already exists' };
+    if (users.find(user => user.username == username)) return { user: undefined, error: 'User already exists' };
 
-    users.push({ id, name, room });
+    users.push({ id, username, room });
 
     return { user: getUser(id), error: undefined };
 };

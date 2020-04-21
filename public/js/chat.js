@@ -16,6 +16,29 @@ var sidebarTemplate = $('#sidebar-template').html();
 //OPTIONS
 var { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
+var autoscroll = () => {
+    // New message element
+    const $newMessage = messages.lastElementChild
+
+    // Height of the new message
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
+
+    // Visible height
+    const visibleHeight = messages.offsetHeight
+
+    // Height of messages container
+    const containerHeight = messages.scrollHeight
+
+    // How far have I scrolled?
+    const scrollOffset = messages.scrollTop + visibleHeight
+
+    if (containerHeight - newMessageHeight <= scrollOffset) {
+        messages.scrollTop = messages.scrollHeight
+    }
+}
+
 socket.on('welcome-message', ({ username, message, createdAt }) => {
     var html = Mustache.render(messageTemplate, {
         username: username,
@@ -45,9 +68,10 @@ socket.on('broadcastLocation', ({ username, location, createdAt }) => {
 });
 
 socket.on('online-users', ({ room, users }) => {
-    console.log(room);
-    console.log(users);
-    var html = Mustache.render(sidebarTemplate, { room, users }); // not working...
+    var html = Mustache.render(sidebarTemplate, {
+        room,
+        users
+    });
     sidebar.html(html);
 });
 
